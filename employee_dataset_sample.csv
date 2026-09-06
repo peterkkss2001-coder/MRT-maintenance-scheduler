@@ -1,0 +1,13 @@
+Employee_ID,Employee_Name,Job_Role,Experience_Level,Availability_Status
+EMP001,Alex Tan,Track Engineer,Senior,Available
+EMP002,Sarah Lim,Track Engineer,Intermediate,Available
+EMP003,Daniel Wong,Track Technician,Intermediate,Available
+EMP004,Michael Lee,Track Technician,Junior,Busy
+EMP005,William Tan,Electrical Engineer,Senior,Available
+EMP006,Emily Ng,Electrical Engineer,Intermediate,Available
+EMP007,Ryan Goh,Electrical Technician,Intermediate,Available
+EMP008,Kevin Chua,Electrical Technician,Senior,Available
+EMP009,Thomas Lim,Safety Officer,Senior,Available
+EMP010,Grace Wong,Safety Officer,Intermediate,Available
+EMP011,Mia Koh,Safety Inspector,Intermediate,Available
+EMP012,Lucas Goh,Safety Inspector,Junior,Unavailable

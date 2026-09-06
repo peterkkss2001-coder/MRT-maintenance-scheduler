@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Export — MRT Maintenance Scheduler{% endblock %}
+{% block content %}
+
+<div class="panel">
+  <h2>Final weekly schedule ({{ schedule|length }} job{{ 's' if schedule|length != 1 else '' }} assigned)</h2>
+
+  {% if schedule %}
+  <table>
+    <thead>
+      <tr><th>Train</th><th>Category</th><th>Priority</th><th>Assigned to</th></tr>
+    </thead>
+    <tbody>
+      {% for entry in schedule %}
+      <tr>
+        <td class="mono">{{ entry.train_number }}</td>
+        <td>{{ entry.problem_statement }}</td>
+        <td>{{ entry.importance_level }}/10</td>
+        <td>
+          {% for emp in entry.assigned_employees %}
+            {{ emp.employee_name }}{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No jobs were assigned this session.</div>
+  {% endif %}
+</div>
+
+{% if unassigned %}
+<div class="panel" style="margin-top: 24px;">
+  <h2>Not assigned ({{ unassigned|length }})</h2>
+  {% for u in unassigned %}
+    <div class="callout error">
+      <strong class="mono">Train {{ u.train_number }}</strong> — {{ u.reason }}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="actions" style="margin-top: 24px;">
+  <a href="{{ url_for('export') }}" class="btn">Download CSV</a>
+  <form method="POST" action="{{ url_for('reset') }}">
+    <button type="submit" class="secondary">Start new week</button>
+  </form>
+</div>
+
+{% endblock %}

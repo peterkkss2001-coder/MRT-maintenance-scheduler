@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Input — MRT Maintenance Scheduler{% endblock %}
+{% block content %}
+
+<div class="grid-two">
+
+  <div class="panel">
+    <h2>Add a train job</h2>
+    <form method="POST" action="{{ url_for('add_problem') }}">
+      <div class="field">
+        <label for="train_number">Train number</label>
+        <input type="text" id="train_number" name="train_number" required placeholder="e.g. 215">
+      </div>
+
+      <div class="field">
+        <label>Problem statement</label>
+        <div class="category-picker">
+          {% for num, info in categories.items() %}
+            <input type="radio" id="cat{{ num }}" name="problem_statement" value="{{ num }}" {% if loop.first %}checked{% endif %}>
+            <label for="cat{{ num }}">{{ info.label }}</label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="problem_rating">Complexity level</label>
+        <div class="range-row">
+          <input type="range" id="problem_rating" name="problem_rating" min="1" max="10" value="5"
+                 oninput="this.nextElementSibling.textContent = this.value">
+          <span class="value mono">5</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="importance_level">Importance / priority</label>
+        <div class="range-row">
+          <input type="range" id="importance_level" name="importance_level" min="1" max="10" value="5"
+                 oninput="this.nextElementSibling.textContent = this.value">
+          <span class="value mono">5</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="excluded">Excluded employees (optional)</label>
+        <input type="text" id="excluded" name="excluded" list="employee-names" placeholder="Comma-separated names">
+        <datalist id="employee-names">
+          {% for emp in employees %}
+            <option value="{{ emp.Employee_Name }}">
+          {% endfor %}
+        </datalist>
+      </div>
+
+      <button type="submit">Add to this week's list</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Employee roster ({{ employees|length }})</h2>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Role</th><th>Level</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for emp in employees %}
+        <tr>
+          <td class="mono">{{ emp.Employee_ID }}</td>
+          <td>{{ emp.Employee_Name }}</td>
+          <td>{{ emp.Job_Role }}</td>
+          <td>{{ emp.Experience_Level }}</td>
+          <td><span class="badge {{ emp.Availability_Status|lower }}">{{ emp.Availability_Status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="panel" style="margin-top: 24px;">
+  <h2>This week's pending jobs ({{ pending|length }})</h2>
+
+  {% if pending %}
+    {% for p in pending %}
+    <div class="pending-row">
+      <div>
+        <strong class="mono">Train {{ p.train_number }}</strong>
+        <span class="tag">{{ categories[p.problem_statement].label }} · complexity {{ p.problem_rating }}/10 · importance {{ p.importance_level }}/10</span>
+      </div>
+      <form method="POST" action="{{ url_for('remove_problem', idx=loop.index0) }}">
+        <button type="submit" class="remove">Remove</button>
+      </form>
+    </div>
+    {% endfor %}
+
+    <form method="POST" action="{{ url_for('start_assignment') }}" style="margin-top: 20px;">
+      <button type="submit">Start assignment ({{ pending|length }} job{{ 's' if pending|length != 1 else '' }})</button>
+    </form>
+  {% else %}
+    <div class="empty-state">
+      <div class="big">—</div>
+      No jobs added yet. Add this week's first train job above.
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

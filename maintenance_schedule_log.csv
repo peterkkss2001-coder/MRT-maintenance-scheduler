@@ -1,0 +1,7 @@
+Schedule_ID,Maintenance_ID,Employee_ID,Maintenance_Type,Date,Start_Time,End_Time,Workstation_Sector_Platform,Status
+SCH001,MNT001,EMP004,Track maintenance,2026-08-29,01:00,03:00,Sector A,Assigned
+SCH002,MNT002,EMP009,Signalling inspection,2026-08-29,02:00,04:00,Sector B,Assigned
+SCH003,MNT003,EMP013,Operations safety check,2026-08-29,03:00,04:30,Platform 2,Assigned
+SCH004,MNT004,EMP007,Electrical equipment repair,2026-08-30,01:00,03:30,Sector C,Assigned
+SCH005,MNT005,EMP015,Safety inspection,2026-08-30,02:00,04:00,Platform 1,Assigned
+SCH006,MNT006,EMP002,Track infrastructure inspection,2026-08-31,01:30,04:00,Sector D,Assigned

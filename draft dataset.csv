@@ -1,0 +1,21 @@
+Employee_ID,Employee_Name,Job_Role,Experience_Level,Availability_Status
+EMP001,Alex Tan,Senior Electrical Engineer,Senior,Available
+EMP002,Sarah Lim,Electrical Engineer,Intermediate,Available
+EMP003,Daniel Wong,Electrical Technician,Intermediate,Available
+EMP004,Michael Lee,Electrical Technician,Junior,Busy
+EMP005,James Koh,Senior Mechanical Engineer,Senior,Available
+EMP006,Emily Ng,Mechanical Engineer,Intermediate,Available
+EMP007,Ryan Goh,Mechanical Technician,Intermediate,Available
+EMP008,Kevin Chua,Signalling Engineer,Senior,Available
+EMP009,Rachel Ho,Signalling Technician,Intermediate,Busy
+EMP010,William Tan,Track Engineer,Senior,Available
+EMP011,Olivia Chan,Track Technician,Intermediate,Available
+EMP012,Thomas Lim,Safety Officer,Senior,Available
+EMP013,Grace Wong,Safety Inspector,Intermediate,Available
+EMP014,Benjamin Ho,Rolling Stock Engineer,Senior,Available
+EMP015,Sophia Tan,Rolling Stock Technician,Intermediate,Available
+EMP016,Ethan Lim,Network Engineer,Senior,Available
+EMP017,Chloe Ng,Systems Engineer,Intermediate,Available
+EMP018,Noah Lee,Electrical Engineer,Intermediate,Unavailable
+EMP019,Mia Koh,Electrical Technician,Intermediate,Available
+EMP020,Lucas Goh,General Maintenance Technician,Intermediate,Available

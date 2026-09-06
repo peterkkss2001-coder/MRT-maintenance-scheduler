@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Assign — MRT Maintenance Scheduler{% endblock %}
+{% block content %}
+
+<div class="job-header">
+  <div>
+    <span class="train mono">Train {{ problem.train_number }}</span>
+    <div style="margin-top: 6px;">
+      <span class="chip">{{ categories[problem.problem_statement].label }}</span>
+      <span class="chip">Complexity {{ problem.problem_rating }}/10</span>
+      <span class="chip {{ priority_class }}">Importance {{ problem.importance_level }}/10 — {{ priority_label }}</span>
+    </div>
+  </div>
+  <div class="progress-text">Job {{ position }} of {{ total }}</div>
+</div>
+
+{% if error %}
+  <div class="callout error">
+    <strong>Could not generate a recommendation.</strong><br>
+    {{ error }}
+  </div>
+  <form method="POST" action="{{ url_for('assign_action') }}">
+    <input type="hidden" name="decision" value="skip">
+    <div class="actions">
+      <button type="submit" class="secondary">Skip this job</button>
+    </div>
+  </form>
+
+{% else %}
+  <div class="panel">
+    <h2>AI recommendation</h2>
+    {% for emp in recommendation.recommended_employees %}
+    <div class="rec-card">
+      <div class="name">{{ emp.employee_name }}</div>
+      <div class="role">{{ emp.job_role }} · {{ emp.experience_level }} · <span class="mono">{{ emp.employee_id }}</span></div>
+      <div class="reason">{{ emp.reason }}</div>
+    </div>
+    {% endfor %}
+
+    {% if recommendation.notes %}
+    <div class="callout notes"><strong>Notes:</strong> {{ recommendation.notes }}</div>
+    {% endif %}
+  </div>
+
+  <form method="POST" action="{{ url_for('assign_action') }}">
+    <div class="actions">
+      <button type="submit" name="decision" value="approve" class="approve">Approve &amp; add to schedule</button>
+      <button type="submit" name="decision" value="reject" class="reject">Reject</button>
+    </div>
+  </form>
+{% endif %}
+
+{% endblock %}
