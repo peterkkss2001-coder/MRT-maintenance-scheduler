@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sector Shift Schedule</title>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { width: 100%; overflow-x: hidden; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f4ef;
+            margin: 0;
+            padding: 0.8rem 1.2rem;
+            color: #222;
+        }
+        .container { width: 100%; margin: 0; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        h1 { font-size: clamp(1.2rem, 2vw, 1.9rem); margin-bottom: 0.2rem; }
+        p.subtitle { color: #555; margin-top: 0; margin-bottom: 0.8rem; font-size: clamp(0.75rem, 0.9vw, 0.95rem); }
+        .account-info { font-size: 0.82rem; color: #444; display: flex; align-items: center; gap: 0.8rem; }
+        .account-info a { color: #2b2b33; font-weight: bold; text-decoration: none; }
+        .account-info a:hover { text-decoration: underline; }
+        .role-badge {
+            background: #2b2b33; color: white; padding: 0.15rem 0.5rem;
+            border-radius: 10px; font-size: 0.72rem; text-transform: uppercase;
+        }
+
+        .tabs { display: flex; gap: 0.4rem; margin-bottom: 1.2rem; margin-top: 1rem; }
+        .tab {
+            padding: 0.55rem 1.3rem;
+            border-radius: 6px 6px 0 0;
+            background: #e5e0d8;
+            color: #444;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .tab.active { background: #2b2b33; color: white; }
+
+        .error-banner {
+            background: #fdecea; border: 1px solid #E5484D; color: #a3231f;
+            padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.88rem;
+        }
+        .info-banner {
+            background: #eaf7ee; border: 1px solid #22A559; color: #1a6b3c;
+            padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.88rem;
+        }
+
+        .panels-row { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: flex-start; }
+        .panels-row form.panel { flex: 1 1 320px; margin-top: 1.8rem; }
+        .danger-panel { border: 1px solid #f3c9c7; }
+        .danger-btn { background: #a3231f; }
+        .danger-btn:hover { background: #7a1a17; }
+        .emergency-panel { border: 1px solid #ffd28a; }
+        .emergency-btn { background: #b35c00; }
+        .emergency-btn:hover { background: #8a4700; }
+
+        .legend { display: flex; gap: 1.2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: #444; }
+        .legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+
+        .table-wrap { width: 100%; max-width: 100%; }
+        table {
+            width: 100%; max-width: 100%; table-layout: fixed; border-collapse: collapse;
+            background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: clamp(0.72rem, 1vw, 1rem);
+        }
+        th, td {
+            border-bottom: 1px solid #eee; padding: clamp(0.4rem, 0.7vw, 0.9rem) clamp(0.3rem, 0.5vw, 0.6rem);
+            vertical-align: top; overflow-wrap: break-word; word-break: break-word;
+        }
+        th { background: #2b2b33; color: white; text-align: left; font-size: clamp(0.72rem, 1vw, 1rem); }
+        th.staff-col, td.staff-col { width: 14%; }
+        th.day-col, td.day-col { width: 12.28%; }
+
+        .staff-name { font-weight: bold; font-size: clamp(0.75rem, 1.05vw, 1.05rem); }
+        .staff-role { font-size: clamp(0.62rem, 0.85vw, 0.85rem); color: #777; line-height: 1.25; }
+        .blank-cell { color: #ccc; font-size: clamp(0.9rem, 1.2vw, 1.2rem); }
+
+        .shift-pill {
+            position: relative; display: block;
+            padding: clamp(0.25rem, 0.4vw, 0.5rem) clamp(0.35rem, 0.5vw, 0.6rem);
+            padding-right: clamp(1.1rem, 1.6vw, 1.5rem);
+            border-radius: 4px; color: white; font-size: clamp(0.68rem, 0.95vw, 0.95rem); line-height: 1.3;
+            overflow: hidden;
+        }
+        .shift-pill .time { position: relative; z-index: 1; display: block; font-weight: bold; }
+        .shift-pill .problem { position: relative; z-index: 1; display: block; font-size: clamp(0.6rem, 0.82vw, 0.82rem); opacity: 0.92; }
+        .shift-pill .importance { position: relative; z-index: 1; display: block; font-size: clamp(0.58rem, 0.78vw, 0.78rem); opacity: 0.85; margin-top: 0.15rem; }
+        .shift-pill .paired-tag {
+            position: relative; z-index: 1;
+            display: block; font-size: clamp(0.62rem, 0.86vw, 0.86rem); font-weight: bold;
+            background: rgba(255,255,255,0.25); border-radius: 3px; padding: 0.1rem 0.3rem;
+            margin-bottom: 0.25rem; width: fit-content;
+        }
+        .emergency-emoji {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+            opacity: 0.32;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .delete-form { position: absolute; top: 2px; right: 2px; margin: 0; z-index: 2; }
+        .delete-btn {
+            background: rgba(0,0,0,0.25); border: none; color: white;
+            width: clamp(14px, 1.3vw, 18px); height: clamp(14px, 1.3vw, 18px);
+            border-radius: 50%; font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+            line-height: 1; cursor: pointer; padding: 0;
+        }
+        .delete-btn:hover { background: rgba(0,0,0,0.5); }
+
+        form.panel {
+            margin-top: 1.8rem; background: white; padding: 1.3rem; border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 640px;
+        }
+        form.panel h2 { margin-top: 0; font-size: 1.05rem; }
+        form.panel p.hint { color: #777; font-size: 0.82rem; margin-top: -0.4rem; margin-bottom: 1rem; }
+        .form-row { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: stretch; }
+        .form-row label { display: flex; flex-direction: column; justify-content: flex-end; font-size: 0.8rem; color: #444; flex: 1; min-width: 160px; }
+        .form-row label .label-text { display: block; min-height: 2.3em; line-height: 1.25; }
+        .form-row input, .form-row select {
+            padding: 0.45rem; border: 1px solid #ccc; border-radius: 4px; margin-top: 0.25rem;
+        }
+        button {
+            background: #2b2b33; color: white; border: none; padding: 0.55rem 1.1rem;
+            border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+        }
+        button:hover { background: #1a1a1f; }
+        .view-only-note { color: #777; font-size: 0.85rem; margin-top: 1.5rem; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <div>
+                <h1>Sector Shift Schedule</h1>
+                <p class="subtitle">Each sector's schedule is independent, and only one shift can run in a sector at a time.</p>
+            </div>
+            <div class="account-info">
+                Signed in as <strong>{{ username }}</strong>
+                <span class="role-badge">{{ role }}</span>
+                <a href="{{ url_for('logout') }}">Log out</a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            {% for sector in sectors %}
+            <a class="tab {% if sector == current_sector %}active{% endif %}" href="{{ url_for('index', sector=sector) }}">{{ sector }}</a>
+            {% endfor %}
+        </div>
+
+        {% if error %}
+        <div class="error-banner">{{ error }}</div>
+        {% endif %}
+
+        {% if info %}
+        <div class="info-banner">{{ info }}</div>
+        {% endif %}
+
+        <div class="legend">
+            {% for problem, color in problem_colors.items() %}
+            <div class="legend-item">
+                <span class="legend-swatch" style="background:{{ color }}"></span>
+                {{ problem }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="table-wrap">
+        <table>
+            <tr>
+                <th class="staff-col">Staff</th>
+                {% for day in days %}
+                <th class="day-col">{{ day }}</th>
+                {% endfor %}
+            </tr>
+            {% for person in staff %}
+            {% for row_index in range(max_rows) %}
+            <tr>
+                {% if row_index == 0 %}
+                <td class="staff-col" rowspan="{{ max_rows }}">
+                    <div class="staff-name">{{ person.name }}</div>
+                    <div class="staff-role">{{ person.role }}</div>
+                </td>
+                {% endif %}
+                {% for day in days %}
+                <td class="day-col">
+                    {% set key = person.name ~ '|' ~ day %}
+                    {% if key in shifts and row_index < shifts[key]|length %}
+                        {% set s = shifts[key][row_index] %}
+                        <span class="shift-pill" style="background:{{ s.color }}">
+                            {% if s.emergency %}
+                            <span class="emergency-emoji" title="{{ s.emergency }}">{{ emergency_emojis.get(s.emergency, '') }}</span>
+                            {% endif %}
+                            {% if role == 'supervisor' %}
+                            <form class="delete-form" method="POST" action="{{ url_for('delete_shift') }}">
+                                <input type="hidden" name="sector" value="{{ current_sector }}">
+                                <input type="hidden" name="staff_name" value="{{ person.name }}">
+                                <input type="hidden" name="day" value="{{ day }}">
+                                <input type="hidden" name="slot" value="{{ s.slot }}">
+                                <button type="submit" class="delete-btn" title="Delete this shift">&times;</button>
+                            </form>
+                            {% endif %}
+                            {% if s.paired_with %}
+                            <span class="paired-tag">{{ ([person.name] + s.paired_with)|join(' & ') }}</span>
+                            {% endif %}
+                            <span class="time">{{ s.time_range }}</span>
+                            <span class="problem">{{ s.problem }}</span>
+                            <span class="importance">Importance: {{ s.importance }}/10</span>
+                        </span>
+                    {% else %}
+                        <span class="blank-cell">&mdash;</span>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </table>
+        </div>
+
+        {% if role == 'supervisor' %}
+        <div class="panels-row">
+        <form class="panel" method="POST" action="{{ url_for('report_problem') }}">
+            <h2>Report a Problem &mdash; {{ current_sector }}</h2>
+            <p class="hint">Staff, day and time are picked automatically: eligible staff by problem type, day/time by nearest available slot based on importance.</p>
+            <input type="hidden" name="sector" value="{{ current_sector }}">
+            <div class="form-row">
+                <label><span class="label-text">Problem</span>
+                    <select name="problem" required>
+                        {% for problem in problems %}
+                        <option value="{{ problem }}">{{ problem }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label><span class="label-text">Importance (1-10, 10 = most urgent)</span>
+                    <select name="importance" required>
+                        {% for i in range(10, 0, -1) %}
+                        <option value="{{ i }}" {% if i == 5 %}selected{% endif %}>{{ i }}{% if i == 10 %} - Immediate (today){% elif i == 8 %} - Same day{% elif i == 7 %} - 1 day later{% elif i == 4 %} - 2 days later{% elif i == 2 %} - 3 days later{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <button type="submit">Auto-Assign Shift</button>
+        </form>
+
+        <form class="panel" method="POST" action="{{ url_for('auto_pair') }}">
+            <h2>Pair Up Uncovered Staff</h2>
+            <p class="hint">Scans every sector, every role, every day of the week (Mon-Sun). Anyone with no shift on a given day gets paired onto the SAME sector/time as a same-role staff member who already has one that day, so nobody is left with nothing to do. Anyone who already has their own shift that day is left untouched.</p>
+            <input type="hidden" name="sector" value="{{ current_sector }}">
+            <button type="submit">Auto-Pair Whole Week</button>
+        </form>
+
+        <form class="panel emergency-panel" method="POST" action="{{ url_for('emergency') }}">
+            <h2>Report Emergency</h2>
+            <p class="hint">Flags the shift with a big icon, and automatically flags a paired partner's shift too. Choosing "Add More Time" also adds a brand-new shift right after this one for this person only (if there's free time) - the original shift is never changed. Any other type only flags.</p>
+            <input type="hidden" name="sector" value="{{ current_sector }}">
+            <div class="form-row">
+                <label><span class="label-text">Emergency type</span>
+                    <select name="emergency_type" required>
+                        {% for etype in emergency_types %}
+                        <option value="{{ etype }}">{{ emergency_emojis.get(etype, '') }} {{ etype }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label><span class="label-text">Active shift</span>
+                    <select name="shift_id" required>
+                        {% for s in active_shifts %}
+                        <option value="{{ s.id }}">{{ s.staff_name }} &mdash; {{ s.day }}, {{ s.sector }}, {{ s.time_range }}{% if s.slot != 'main' %} (extra){% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <button type="submit" class="emergency-btn">Report Emergency</button>
+        </form>
+
+        <form class="panel danger-panel" method="POST" action="{{ url_for('delete_all_shifts') }}" onsubmit="return confirm('This will permanently delete ALL shifts in ALL sectors (A, B and C) for the entire week. This cannot be undone. Continue?');">
+            <h2>Clear All Shifts</h2>
+            <p class="hint">Deletes every shift in every sector (A, B and C) for the whole week. This cannot be undone - use it to start the schedule fresh.</p>
+            <input type="hidden" name="sector" value="{{ current_sector }}">
+            <button type="submit" class="danger-btn">Delete All Shifts (All Sectors)</button>
+        </form>
+        </div>
+        {% else %}
+        <p class="view-only-note">You're signed in as a worker &mdash; this view is read-only.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

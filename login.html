@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login &mdash; Sector Shift Schedule</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f4ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 340px;
+        }
+        h1 { font-size: 1.3rem; margin-top: 0; }
+        label { display: block; font-size: 0.85rem; color: #444; margin-bottom: 1rem; }
+        input {
+            width: 100%;
+            padding: 0.55rem;
+            margin-top: 0.3rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            background: #2b2b33;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        button:hover { background: #1a1a1f; }
+        .error { background: #fdecea; color: #a3231f; padding: 0.6rem; border-radius: 5px; font-size: 0.82rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Sign in</h1>
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        <form method="POST">
+            <label>Username
+                <input type="text" name="username" required autofocus>
+            </label>
+            <label>Password
+                <input type="password" name="password" required>
+            </label>
+            <button type="submit">Sign in</button>
+        </form>
+    </div>
+</body>
+</html>
