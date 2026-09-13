@@ -1,0 +1,37 @@
+[
+  {
+    "id": "E001",
+    "name": "John Tan",
+    "password": "1234",
+    "role": "worker",
+    "department": "Maintenance"
+  },
+  {
+    "id": "E002",
+    "name": "Sarah Lim",
+    "password": "1234",
+    "role": "worker",
+    "department": "Electrical"
+  },
+  {
+    "id": "E003",
+    "name": "Amir Rahman",
+    "password": "1234",
+    "role": "worker",
+    "department": "Mechanical"
+  },
+  {
+    "id": "E004",
+    "name": "Emily Wong",
+    "password": "1234",
+    "role": "worker",
+    "department": "Maintenance"
+  },
+  {
+    "id": "S001",
+    "name": "David Lee",
+    "password": "admin123",
+    "role": "supervisor",
+    "department": "Maintenance"
+  }
+]

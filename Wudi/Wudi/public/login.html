@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Emergency System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-card">
+
+            <h1>Employee Safety System</h1>
+
+            <p class="subtitle">
+                Employee Emergency Management
+            </p>
+
+            <form id="loginForm">
+
+                <label>Employee ID</label>
+
+                <input
+                    type="text"
+                    id="employeeId"
+                    placeholder="e.g. E001"
+                    required
+                >
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    required
+                >
+
+                <button type="submit" class="primary-button">
+                    Login
+                </button>
+
+            </form>
+
+            <p id="loginMessage"></p>
+
+            <div class="demo-login">
+
+                <strong>Demo Accounts</strong>
+
+                <p>Worker: E001 / 1234</p>
+
+                <p>Supervisor: S001 / admin123</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
