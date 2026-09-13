@@ -41,6 +41,43 @@
       </div>
 
       <div class="field">
+        <label style="display:flex; align-items:center; gap:8px; text-transform:none; font-size:13px; font-weight:500; cursor:pointer;">
+          <input type="checkbox" id="auto_assign" name="auto_assign" value="1" checked
+                 onchange="document.getElementById('manual-fields').style.display = this.checked ? 'none' : 'block';">
+          Let AI choose day, section &amp; time slot automatically
+        </label>
+      </div>
+
+      <div id="manual-fields" style="display:none;">
+        <div class="field">
+          <label for="day">Day</label>
+          <select id="day" name="day">
+            {% for d in days %}
+              <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="section">Section</label>
+          <select id="section" name="section">
+            {% for s in sections %}
+              <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="slot">Time slot</label>
+          <select id="slot" name="slot">
+            {% for s in slots %}
+              <option value="{{ s.label }}">{{ s.label }} ({{ s.start }}–{{ s.end }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
         <label for="excluded">Excluded employees (optional)</label>
         <input type="text" id="excluded" name="excluded" list="employee-names" placeholder="Comma-separated names">
         <datalist id="employee-names">
@@ -84,7 +121,9 @@
     <div class="pending-row">
       <div>
         <strong class="mono">Train {{ p.train_number }}</strong>
-        <span class="tag">{{ categories[p.problem_statement].label }} · complexity {{ p.problem_rating }}/10 · importance {{ p.importance_level }}/10</span>
+        <span class="tag">{{ categories[p.problem_statement].label }} · complexity {{ p.problem_rating }}/10 · importance {{ p.importance_level }}/10 ·
+          {% if p.day %}{{ p.day }} · {{ p.section }} · slot {{ p.slot_label }} ({{ p.slot_start }}–{{ p.slot_end }}){% else %}<em>AI will choose day/section/slot</em>{% endif %}
+        </span>
       </div>
       <form method="POST" action="{{ url_for('remove_problem', idx=loop.index0) }}">
         <button type="submit" class="remove">Remove</button>

@@ -8,13 +8,16 @@
   {% if schedule %}
   <table>
     <thead>
-      <tr><th>Train</th><th>Category</th><th>Priority</th><th>Assigned to</th></tr>
+      <tr><th>Train</th><th>Category</th><th>Day</th><th>Section</th><th>Slot</th><th>Priority</th><th>Assigned to</th></tr>
     </thead>
     <tbody>
       {% for entry in schedule %}
       <tr>
         <td class="mono">{{ entry.train_number }}</td>
         <td>{{ entry.problem_statement }}</td>
+        <td>{{ entry.day }}</td>
+        <td>{{ entry.section }}</td>
+        <td class="mono">{{ entry.slot_label }} ({{ entry.slot_start }}–{{ entry.slot_end }})</td>
         <td>{{ entry.importance_level }}/10</td>
         <td>
           {% for emp in entry.assigned_employees %}
@@ -43,6 +46,7 @@
 
 <div class="actions" style="margin-top: 24px;">
   <a href="{{ url_for('export') }}" class="btn">Download CSV</a>
+  <a href="{{ url_for('export_json') }}" class="btn secondary">Download JSON</a>
   <form method="POST" action="{{ url_for('reset') }}">
     <button type="submit" class="secondary">Start new week</button>
   </form>
