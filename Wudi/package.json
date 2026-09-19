@@ -1,9 +1,0 @@
-{
-  "name": "employee-emergency-system",
-  "version": "1.0.0",
-  "description": "Employee emergency management system",
-  "main": "server.py",
-  "scripts": {
-    "start": "python server.py"
-  }
-}
